@@ -1,0 +1,14 @@
+import express from "express";
+import {
+  runTimeoutScraper,
+  runConcretePlaygroundScraper,
+  runAllScrapers,
+} from "../controllers/scraper.controller.js";
+
+const router = express.Router();
+
+router.get("/timeout", runTimeoutScraper);
+router.get("/concrete-playground", runConcretePlaygroundScraper);
+router.post("/run", runAllScrapers);
+
+export default router;
