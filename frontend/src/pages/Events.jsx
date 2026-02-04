@@ -7,6 +7,8 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -35,6 +37,17 @@ export default function Events() {
       </div>
     );
   }
+
+  const filteredEvents = events.filter((event) => {
+    const query = searchQuery.toLowerCase();
+
+    return (
+      event.title?.toLowerCase().includes(query) ||
+      event.location?.toLowerCase().includes(query) ||
+      event.description?.toLowerCase().includes(query)
+    );
+  });
+
 
   return (
     <>
@@ -65,7 +78,34 @@ export default function Events() {
 
         {/* Events Grid */}
         <div className="max-w-7xl mx-auto px-6 py-16">
-          {events.length === 0 ? (
+
+          {/* Search Bar */}
+          <div className="mb-10">
+            <div className="relative max-w-xl">
+              <input
+                type="text"
+                placeholder="Search events by name, location, or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 px-5 py-4 pr-12 text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
+              />
+              <svg
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-4.35-4.35m1.85-5.4a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          {filteredEvents.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-6xl mb-6">🎭</div>
               <p className="text-2xl font-light text-slate-600">
@@ -75,7 +115,7 @@ export default function Events() {
             </div>
           ) : (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {events.map((event, index) => (
+              {filteredEvents.map((event, index) => (
                 <div
                   key={event._id}
                   className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 animate-slide-up border border-slate-200 flex flex-col"
