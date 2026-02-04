@@ -9,6 +9,6 @@ const router = express.Router();
 
 router.get("/timeout", runTimeoutScraper);
 router.get("/concrete-playground", runConcretePlaygroundScraper);
-router.post("/run", runAllScrapers);
+router.get("/run", runAllScrapers);
 
 export default router;
