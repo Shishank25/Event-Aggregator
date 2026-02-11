@@ -30,7 +30,7 @@ export default function App() {
 
   const loginWithGoogle = () => {
     window.location.href =
-      "http://localhost:5000/api/auth/google";
+      "https://event-aggregator-ruwz.onrender.com/api/auth/google";
   };
 
   const logout = () => {

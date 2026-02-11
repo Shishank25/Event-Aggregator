@@ -9,8 +9,9 @@ export const googleCallback = async (req, res) => {
     { expiresIn: "7d" }
   );
 
-  // Redirect to frontend with token
+  const frontendURL = process.env.FRONTEND_URL;
+
   res.redirect(
-    `http://localhost:5173/login/success?token=${token}`
+    `${frontendURL}/login/success?token=${token}`
   );
 };
