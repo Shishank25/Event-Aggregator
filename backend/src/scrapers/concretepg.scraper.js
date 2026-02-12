@@ -71,8 +71,25 @@ export const fetchConcretePlaygroundEvents = async () => {
         .trim();
 
       // Image URL - get the src from the first img tag
-      const imageUrl =
-        $(el).find("img").first().attr("src") || "";
+      const img = $(el).find("img").first();
+
+      let imageUrl =
+        img.attr("src") ||
+        img.attr("data-src") ||
+        img.attr("data-original") ||
+        img.attr("data-lazy-src") ||
+        "";
+
+      if (!imageUrl) {
+        const srcset = img.attr("srcset");
+        if (srcset) {
+          imageUrl = srcset.split(",")[0].split(" ")[0];
+        }
+      }
+
+      if (imageUrl && imageUrl.startsWith("/")) {
+        imageUrl = `${BASE_URL}${imageUrl}`;
+      }
 
       // You can also extract from data attributes on the li element
       const dataUrl = $(el).attr("data-url") || "";
@@ -80,17 +97,17 @@ export const fetchConcretePlaygroundEvents = async () => {
       const latitude = $(el).attr("data-latitude") || "";
       const longitude = $(el).attr("data-longitude") || "";
 
-      console.log("Scraped event:", {
-        title,
-        link,
-        description,
-        dateText,
-        venue,
-        imageUrl,
-        dataUrl,
-        latitude,
-        longitude
-      });
+      // console.log("Scraped event:", {
+      //   title,
+      //   link,
+      //   description,
+      //   dateText,
+      //   venue,
+      //   imageUrl,
+      //   dataUrl,
+      //   latitude,
+      //   longitude
+      // });
 
       const normalized = {
         title,

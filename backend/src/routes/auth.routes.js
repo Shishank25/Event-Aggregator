@@ -1,6 +1,7 @@
 import express from "express";
 import passport from "passport";
-import { googleCallback } from "../controllers/auth.controller.js";
+import { getUser, googleCallback, sendOtp, verifyOtp } from "../controllers/auth.controller.js";
+import { authenticateToken } from "../services/email.services.js";
 
 const router = express.Router();
 
@@ -18,5 +19,9 @@ router.get(
   }),
   googleCallback
 );
+
+router.post("/send-otp", sendOtp);
+router.post("/verify-otp", verifyOtp);
+router.get('/me', authenticateToken, getUser);
 
 export default router;

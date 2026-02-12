@@ -15,40 +15,64 @@ export const fetchTimeoutEvents = async () => {
   const events = [];
 
   $("article").each((_, el) => {
-    const title = $(el).find("h3").first().text().trim();
-    const description = $(el)
-      .find("p")
-      .first()
-      .text()
-      .trim();
+  const title = $(el).find("h3").first().text().trim();
 
-    const link = $(el).find("a").attr("href");
+  const description = $(el)
+    .find("p")
+    .first()
+    .text()
+    .trim();
 
-    if (!title || !link) return;
+  const link = $(el).find("a").attr("href");
 
-    const normalized = {
-      title,
-      description,
-      date: null, // Time Out often lists date inside article page
-      venue: "",
-      address: "",
-      city: "Sydney",
-      imageUrl: "",
-      category: ["Things to do"],
-      source: "Time Out Sydney",
-      originalUrl: link.startsWith("http")
-        ? link
-        : `https://www.timeout.com${link}`,
-      lastScrapedAt: new Date(),
-    };
+  if (!title || !link) return;
 
-    normalized.hash = crypto
-      .createHash("sha256")
-      .update(JSON.stringify(normalized))
-      .digest("hex");
+  // 🔥 IMAGE EXTRACTION
+  const img = $(el).find("img").first();
 
-    events.push(normalized);
-  });
+  let imageUrl =
+    img.attr("src") ||
+    img.attr("data-src") ||
+    img.attr("data-original") ||
+    "";
+
+  // Handle srcset
+  if (!imageUrl) {
+    const srcset = img.attr("srcset");
+    if (srcset) {
+      imageUrl = srcset.split(",")[0].split(" ")[0];
+    }
+  }
+
+  // Convert relative → absolute
+  if (imageUrl && imageUrl.startsWith("/")) {
+    imageUrl = `https://www.timeout.com${imageUrl}`;
+  }
+
+  const normalized = {
+    title,
+    description,
+    date: null,
+    venue: "",
+    address: "",
+    city: "Sydney",
+    imageUrl,
+    category: ["Things to do"],
+    source: "Time Out Sydney",
+    originalUrl: link.startsWith("http")
+      ? link
+      : `https://www.timeout.com${link}`,
+    lastScrapedAt: new Date(),
+  };
+
+  normalized.hash = crypto
+    .createHash("sha256")
+    .update(JSON.stringify(normalized))
+    .digest("hex");
+
+  events.push(normalized);
+});
+
 
   return events;
 };

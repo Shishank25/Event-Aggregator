@@ -12,6 +12,10 @@ export const endpoints = {
   // Auth
   auth: {
     google: "/auth/google",
+
+    // OTP
+    sendOtp: "/auth/send-otp",
+    verifyOtp: "/auth/verify-otp",
   },
 
   // Admin dashboard (protected)
