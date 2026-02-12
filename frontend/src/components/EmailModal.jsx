@@ -41,13 +41,14 @@ export default function EmailModal({ event, onClose }) {
       if (result.success) {
         // Redirect to event URL after successful login
         window.location.href = event.originalUrl;
+        onClose();
       } else {
         // Handle login failure
         console.error("Login failed:", result.error);
-        setLoading(false);
       }
     } catch (error) {
       console.error("Error verifying OTP:", error);
+    } finally {
       setLoading(false);
     }
   };
